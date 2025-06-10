@@ -35,7 +35,7 @@ $(OBJ_DIR)%.o: srcs/%.c
 	@$(CC) $(CFLAG) -c $< -o $@
 
 $(NAME): $(OBJ_DIR) $(OBJ) $(LIBFT)
-	@$(CC) $(CFLAG) $(INC) $(OBJ) -o $(NAME)
+	@$(CC) $(CFLAG) $(INC) $(OBJ) $(LIBFT) -o $(NAME)
 	
 clean:
 	@$(RM) $(OBJ_DIR)

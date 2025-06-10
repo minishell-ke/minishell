@@ -1,31 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   bulitin-exe.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eeravci <eeravci@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/11 00:41:19 by eeravci           #+#    #+#             */
-/*   Updated: 2025/06/11 00:47:10 by eeravci          ###   ########.fr       */
+/*   Created: 2025/06/11 00:24:32 by eeravci           #+#    #+#             */
+/*   Updated: 2025/06/11 00:28:25 by eeravci          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int main(void) 
-{
-    t_list *test_cmd = malloc(sizeof(t_list));
-    test_cmd->input = ft_strdup("pwd");
-    test_cmd->output = NULL;
-
-    printf("testing pwd builtin:\n");
-    ft_pwd(test_cmd);
-
-    printf("stored output: %s\n", test_cmd->output);
-
-    free(test_cmd->input);
-    free(test_cmd->output);
-    free(test_cmd);
-
-    return 0;
-}
+// we can all built-in files in here22

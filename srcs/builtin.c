@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eeravci <eeravci@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/11 00:41:19 by eeravci           #+#    #+#             */
-/*   Updated: 2025/06/11 00:47:10 by eeravci          ###   ########.fr       */
+/*   Created: 2025/06/10 23:49:02 by eeravci           #+#    #+#             */
+/*   Updated: 2025/06/11 00:46:40 by eeravci          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-int main(void) 
+int ft_pwd(t_list *commands)
 {
-    t_list *test_cmd = malloc(sizeof(t_list));
-    test_cmd->input = ft_strdup("pwd");
-    test_cmd->output = NULL;
-
-    printf("testing pwd builtin:\n");
-    ft_pwd(test_cmd);
-
-    printf("stored output: %s\n", test_cmd->output);
-
-    free(test_cmd->input);
-    free(test_cmd->output);
-    free(test_cmd);
-
-    return 0;
+    char cwd[PATH_MAX];
+    
+    if(getcwd(cwd, sizeof(cwd)) != NULL)
+    {
+        commands->output = ft_strdup(cwd);
+        printf("%s\n", cwd);
+        return 0;
+    }
+    else
+    {
+        commands->output = ft_strdup("Error occured!");
+        perror("pwd failed");
+        return 1;
+    }
 }
