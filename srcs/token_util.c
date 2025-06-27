@@ -47,12 +47,17 @@ Print each token node (for testing)
 */
 void	print_tokens(t_token *tokens)
 {
+	if (!tokens)
+	{
+		ft_printf("null\n");
+		return ;
+	}
 	while (tokens)
 	{
 		ft_printf("Token: %s , Type: %d\n", tokens->value, tokens->type);
 		tokens = tokens->next;
 	}
-	ft_printf("\n");
+	ft_printf("-----------------\n");
 }
 
 void	free_tokens(t_token **tokens)

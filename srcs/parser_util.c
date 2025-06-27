@@ -35,6 +35,11 @@ void	print_command_list(t_command *cmds)
 	int	i;
 	int	cmd_num;
 
+	if (!cmds)
+	{
+		ft_printf("null\n");
+		return ;
+	}
 	cmd_num = 1;
 	while (cmds)
 	{

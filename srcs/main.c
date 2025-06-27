@@ -25,8 +25,8 @@ int	main(int argc, char **argv, char **envp)
     while (true)
     {
         msh.input = readline("minishell> ");
-        // if (!msh.input)
-        //     break;
+        if (!msh.input)
+            break;
         add_history(msh.input); // save input history
         // ft_printf("\n%s\n",msh.input);
         msh.tokens = token_stream(msh.input, msh.dict_env);
@@ -35,8 +35,14 @@ int	main(int argc, char **argv, char **envp)
         free_tokens(&msh.tokens);
         execute(&msh);
         // print_command_list(msh.cmds);
+
+        msh.tokens = token_stream(&msh);
+        // print_tokens(msh.tokens);
+        msh.cmds = parser(msh.tokens);
+        free_tokens(&msh.tokens);
+        // execute(&msh);
+        print_command_list(msh.cmds);
         free_command_list(msh.cmds);
-        
         free(msh.input);
     }
     free_env_list(&msh.dict_env);

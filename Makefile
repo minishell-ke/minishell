@@ -11,7 +11,7 @@ CFLAG = -Wall -Werror -Wextra
 RM = rm -rf
 
 SRCBASE = main env_util token token_util token_special \
-		 token_word parser parser_util syntax_checker \
+		 token_word token_word_util parser parser_util syntax_checker \
 		 env_util2 ft_cd ft_echo ft_env ft_exit ft_export \
 		 ft_pwd ft_unset cmd_exe signal exec_utils export_utils 
 

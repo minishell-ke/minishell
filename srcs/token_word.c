@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_word.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ksuebtha <ksuebtha@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/25 23:35:49 by ksuebtha          #+#    #+#             */
+/*   Updated: 2025/06/25 23:58:14 by ksuebtha         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/minishell.h"
 
 char *extract_single_quote(char *input, int *i)
@@ -9,29 +21,33 @@ char *extract_single_quote(char *input, int *i)
     start = *i;
     while (input[*i] && input[*i] != '\'')
         (*i)++;
+    if (input[*i] != '\'')
+    {
+        ft_putstr_fd("minishell: syntax error: unclosed single quote\n", 2);
+        return (NULL);
+    }
     text = ft_strndup(&input[start], *i - start);
-    if (input[*i] == '\'')
-        (*i)++;
+    (*i)++;
     return (text);
 }
 
-/*
-Extracts a variable name like USER from a string like $USER.
-*/
-char	*extract_var_name(const char *str, int *i)
+static char	*extract_double_quoted_text(char *input, int *i)
 {
-	int	start;
-
+	int		start;
     if (!ft_isalpha(str[*i]) && str[*i] != '_')
         return (ft_strdup(""));
 	
     start = *i;
 	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
+
+	start = *i;
+	while (input[*i] && input[*i] != '"' && input[*i] != '$')
+
 		(*i)++;
-	return (ft_strndup(&str[start], *i - start));
+	return (ft_strndup(&input[start], *i - start));
 }
 
-char *extract_dollar_value(char *input, int *i, t_env *env)
+static char	*handle_quoted_part(char *input, int *i, t_msh *msh)
 {
 	char	*var;
 	char	*val;
@@ -67,50 +83,38 @@ char *extract_dollar_value(char *input, int *i, t_env *env)
 	if (!val)
 		return ft_strdup("");
 	return ft_strdup(val);
+	if (input[*i] == '$')
+		return (extract_dollar_value(msh->input, i, msh));
+	else
+		return (extract_double_quoted_text(input, i));
 }
 
-char *strjoin_and_free(char *s1, char *s2)
+char *extract_double_quote(char *input, int *i, t_msh *msh)
 {
-    char *res = ft_strjoin(s1, s2);
-    if (!res)
-    {
-        free(s1);
-        free(s2);
-        return (NULL);
-    }
-    free(s1);
-    free(s2);
-    return (res);
-}
-
-char *extract_double_quote(char *input, int *i, t_env *env)
-{
-    char *result;
+	char *result;
     char *part;
     
     (*i)++;
     result = ft_strdup("");
     while (input[*i] && input[*i] != '"')
     {
-        if (input[*i] == '$')
+        part = handle_quoted_part(input, i, msh);
+        if (!part)
         {
-            if (ft_isalpha(input[*i + 1]) || input[*i + 1] == '_' || 
-                input[*i + 1] == '{' || input[*i + 1] == '?')
-                part = extract_dollar_value(input, i, env);
-            else
-            {
-                part = ft_strndup(&input[*i], 1);
-                (*i)++;
-            }
+            free(result);
+            return (NULL);
         }
-        else
-            part = extract_plain_text(input, i);
         result = strjoin_and_free(result, part);
         if (!result)
             return (NULL);
     }
-    if (input[*i] == '"')
-        (*i)++;
+    if (input[*i] != '"')
+    {
+        ft_putstr_fd("minishell: syntax error: unclosed double quote\n", 2);
+        free(result);
+        return (NULL);
+    }
+    (*i)++;
     return (result);
 }
 
@@ -120,38 +124,4 @@ char *extract_plain_text(char *input, int *i)
 	while (input[*i] && !ft_strchr(" |<>\"'$", input[*i]))
 		(*i)++;
 	return ft_strndup(&input[start], *i - start);
-}
-
-void	handle_word(char *input, int *i, t_token **tokens, t_env *env)
-{
-	char	*word;
-	char	*part;
-
-	word = ft_strdup("");
-	while (input[*i] && input[*i] != ' ' && input[*i] != '|'
-		&& input[*i] != '<' && input[*i] != '>')
-	{
-		if (input[*i] == '\'')
-			part = extract_single_quote(input, i);
-        else if (input[*i] == '"')
-            part = extract_double_quote(input, i, env);
-        else if (input[*i] == '$')
-        {
-            if (ft_isalpha(input[*i + 1]) || input[*i + 1] == '_' ||
-                input[*i + 1] == '{' || input[*i + 1] == '?')
-                part = extract_dollar_value(input, i, env);
-            else
-            {
-                part = ft_strndup(&input[*i], 1);
-                (*i)++;
-            }
-        } 
-        else
-            part = extract_plain_text(input, i);
-        word = strjoin_and_free(word, part);
-        if (!word)
-            return ;
-	}
-	add_token(tokens, new_token(word, TOKEN_WORD));
-	free(word);
 }

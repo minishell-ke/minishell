@@ -7,6 +7,7 @@
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 22:20:48 by ksuebtha          #+#    #+#             */
 /*   Updated: 2025/06/26 22:41:55 by eeravci          ###   ########.fr       */
+/*   Updated: 2025/06/25 23:59:08 by ksuebtha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +101,8 @@ void		free_env_list(t_env **head);
 void		print_env_list(t_env *head);
 
 // token.c
-t_token		*token_stream(char *input, t_env *env);
-void		handle_word(char *input, int *i, t_token **tokens, t_env* env);
+t_token	*token_stream(t_msh *msh);
+int	handle_word(t_msh *msh, int *i, t_token **tokens);
 
 // token_special.c
 int			handle_pipe(char *input, int *i, t_token **tokens);
@@ -117,12 +118,16 @@ void		free_tokens(t_token **tokens);
 
 // token_word.c
 char *extract_single_quote(char *input, int *i);
-char	*extract_var_name(const char *str, int *i);
-char *extract_dollar_value(char *input, int *i, t_env *env);
-char *strjoin_and_free(char *s1, char *s2);
-char *extract_double_quote(char *input, int *i, t_env *env);
+char *extract_double_quote(char *input, int *i, t_msh *msh);
 char *extract_plain_text(char *input, int *i);
-void	handle_word(char *input, int *i, t_token **tokens, t_env *env);
+
+// token_word_util.c
+char	*extract_var_name(const char *str, int *i);
+char *get_variable_value(char *var, t_msh *msh);
+char *strjoin_and_free(char *s1, char *s2);
+char *handle_dollar_braces(char *input, int *i);
+char *extract_dollar_value(char *input, int *i, t_msh *msh);
+
 
 // parser.c
 t_command	*init_command(void);
